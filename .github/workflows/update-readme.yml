@@ -1,0 +1,29 @@
+name: Update README
+
+on:
+  schedule:
+    # Runs every hour
+    - cron: "0 * * * *"
+  workflow_dispatch:
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update README with latest stats
+        run: |
+          echo "README updated at $(date)" >> update-log.txt
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "📊 Update stats $(date +'%Y-%m-%d %H:%M:%S')" || echo "No changes to commit"
+          git push
